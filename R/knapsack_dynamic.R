@@ -1,48 +1,33 @@
 knapsack_dynamic <- function(x, W) {
 
+  # initialize list to store list and vector to store chosen objects
   result_list <- list(value = 0, elements = c())
   chosen_elements <- c()
 
-  ks_cap <- W
-  weights <- x[,1]
-  weights <- c(0, weights)
-  values <- x[,2]
-  values <- c(0, values)
-  n = length(weights)
-  ks_dp <- matrix(0, nrow = n, ncol = ks_cap+1)
+  ks_cap <- W                                       #assigning knapsack capacity
+  weights <- x[,1]                                  #separate vector containing weights of objects
+  weights <- c(0, weights)                          #adding 0 as first elements for looping
+  values <- x[,2]                                   #separate vector containing the values of objects
+  values <- c(0, values)                            #adding 0 as first element for looping
+  n = length(weights)                               #number of objects for consideration
+  ks_dp <- matrix(0, nrow = n, ncol = ks_cap+1)     #initializing result matrix of rows = number of elements & columns = knapsack capacity
+
+  #creating the knapsack value calculation nested loop
   for (i in 2:n) {
     for (j in 2:(ks_cap+1)) {
-      if (i == 1 || j == 1) ks_dp[i,j] = 0
-      else if (weights[i] <= j) ks_dp[i,j] = max(ks_dp[i-1,j], ks_dp[i-1,j-weights[i]]+values[i])
-      else if (weights[i] > j) ks_dp[i,j] = ks_dp[i-1,j]
+      if (i == 1 || j == 1) ks_dp[i,j] = 0          #the first row and column of the matrix should be zero
+      else if (weights[i] <= j) {
+        ks_dp[i,j] = max(ks_dp[i-1,j], ks_dp[i-1,j-weights[i]]+values[i])                  #if object can fit in knapsack then take object if adding its value improves the value of the knapsack
+        if (!(ks_dp[i,j] == ks_dp[i-1, j])) chosen_elements <- c(chosen_elements, i-1)     #if object was chosen then store its index in the result vector
+      } else if (weights[i] > j) ks_dp[i,j] = ks_dp[i-1,j]                                 #if object weight was out of bounds then take the value of the previous row
     }
   }
 
+  chosen_elements <- unique(chosen_elements)        #clean the chosen elements vector
+
+  #assign solution to the resulting list
   result_list$value = ks_dp[n, ks_cap+1]
+  result_list$elements <- chosen_elements
 
-    i = n+1
-    j = cap_left+1
-    k=1
-
-    while (i>1 && j>1) {
-      if (!(calc_matrix[i,j] == calc_matrix[i-1,j])) {
-        chosen_elements[k] <- i-1
-        j = j - weight_vec[i]
-        i = i-1
-        k=k+1
-      } else {i <- i - 1}
-    }
-
-    result_list$elements <- chosen_elements
-
-    return(result_list)
-  }
-
-  result_list <- ks_dp(n, cap_left, weight_vec, value_vec)
-
-
-
-
+  return(result_list)
 }
-
-write.csv(calc_matrix, file = "D:/Documents/LiU Final/Autumn 21/732A94 - Advanced R/Labs/dpcheck1.csv")
