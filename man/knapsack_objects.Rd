@@ -4,7 +4,7 @@
 \alias{knapsack_objects}
 \title{knapsack problem data set}
 \usage{
-knapsack_objects(n)
+knapsack_objects(2000)
 }
 \arguments{
 \item{n}{as integer to represent the number of objects in the knapsack problem to be generated}

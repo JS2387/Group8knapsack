@@ -1,3 +1,9 @@
+#' @title greedy_knapsack function
+#' @description evaluates the solution for knapsack problem by choosing elements with highest value per unit weight and using complete knapsack capacity
+#' @returns list containing sum of values of chosen elements and the reference of the elements chosen in the final solution
+#' @param x as a {\code}data.frame containing the weights and values of knapsack objects with column names 'w' & 'v' respectively
+#' @param W as a {\code}numeric value defining the constraint of the knapsack capacity
+#' @export
 greedy_knapsack <- function(x, W) {
 
   kp_objects <- x                                                        #assign data to temp variable

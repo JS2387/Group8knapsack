@@ -1,7 +1,7 @@
 #' @title knapsack problem data set
 #' @description Creates a data frame that can be used for implementing the knapsack algorithm
 #' @param n as integer to represent the number of objects in the knapsack problem to be generated
-#' @example knapsack_objects(2000)
+#' @usage knapsack_objects(2000)
 #' @export
 knapsack_objects <- function(n) {
   suppressWarnings(RNGversion(min(as.character(getRversion()),"3.5.3")))

@@ -1,0 +1,124 @@
+---
+title: "lab_report_knapsack"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{lab_report_knapsack}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(Group8knapsack)
+```
+# KNAPSACK PROBLEM
+
+This package is designed to tackle the classical knapsack problem with 3 different approaches: 
+* Brute Force Method: knapsack_rute_force()
+* Dynamic Programming: knapsack_dynamic()
+* Greedy heuristic
+
+But before we get into the algorithms used, we've written a data generation function that creates a set of objects to be used for the knapsack problem. The sample data can be created by the user providing the total number of objects 'n'
+
+```{r}
+test_knapsack <- knapsack_objects(2000)
+```
+
+This returns a dataset with 2 columns 'w' which represents the weights of each object and 'v' which represents the corresponding value of each knapsack object.
+
+## Brute Force Method
+
+The first approach is the 'naive' approach or as we call it the brute force method. It is so called because it iterates over every possible combination of all available knapsack objects and finds the most optimum solution. The function to be called for this algorithm is displayed as follows:
+
+```{r}
+test_knapsack <- knapsack_objects(2000)
+knapsack_brute_force(test_knapsack[1:12,], 3500)
+```
+
+This method results in the computation of a problem whose complexity is of the order 2^n for n objects. Hence, the computation of the problem takes an incrementally longer amount of time as we keep increasing knapsack objects
+
+``` {r}
+start_time <- Sys.time()
+invisible(knapsack_brute_force(x = test_knapsack[1:12,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+``` {r}
+start_time <- Sys.time()
+invisible(knapsack_brute_force(x = test_knapsack[1:16,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+## Dynamic Programming
+
+We next improve the speed of solving by applying dynamic programming. In this approach we iterate over every element and check if it should be included in the knapsack or not. We achieve this by filling a matrix of the dimensions - 'n' x 'W'; where 'n' is the total number of knapsack objects and 'W' is the knapsack capacity. This approach follows that the most optimum solution will be found [n,W] cell of the resultant matrix. The function can be called as follows:
+
+``` {r}
+test_knapsack <- knapsack_objects(2000)
+knapsack_dynamic(test_knapsack[1:12,], 3500)
+```
+
+The order of complexity in this approach is O(nW) as the matrix used to derive the result is of the dimension n x W. Hence the loop runs at most 'nW' times.
+
+While this solution is significantly faster than the brute force method, the time taken to solve this problem still increases significantly as we keep increasing the number of objects in the knapsack.
+
+``` {r}
+start_time <- Sys.time()
+invisible(knapsack_dynamic(x = test_knapsack[1:12,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+``` {r}
+start_time <- Sys.time()
+invisible(knapsack_dynamic(x = test_knapsack[1:16,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+``` {r}
+start_time <- Sys.time()
+invisible(knapsack_dynamic(x = test_knapsack[1:500,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+## Greedy Heuristic
+
+The final algorithm used in solving this problem is the greedy method. In this method, we assume that the object in the knapsack can be split and included in the knapsack by parts. Therefore, this algorithm ranks all the objects in the decreasing order of value per unit of weight of each object and start filling the knapsack with the objects with higher yield. When it reached the upper limit of the knapsack capacity, it then takes a fraction of the final object and returns the resulting value and the list of chosen elements. The usage of the function is as follows:
+
+``` {r}
+test_knapsack <- knapsack_objects(2000000)
+greedy_knapsack(test_knapsack[1:800,], 3500)
+```
+
+This particular code runs significantly faster and hance can be used to find a solution for much larger data sets in a limited amount of time.
+
+``` {r}
+start_time <- Sys.time()
+invisible(greedy_knapsack(x = test_knapsack[1:800,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+``` {r}
+start_time <- Sys.time()
+invisible(greedy_knapsack(x = test_knapsack[1:1200,], W = 3500))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
+
+``` {r}
+start_time <- Sys.time()
+invisible(greedy_knapsack(x = test_knapsack[1:1000000,], W = 350000))
+end_time <- Sys.time()
+print(difftime(end_time, start_time, units = "secs"))
+```
