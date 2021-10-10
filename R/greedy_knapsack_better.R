@@ -1,10 +1,10 @@
-#' @title greedy_knapsack function
-#' @description evaluates the solution for knapsack problem by choosing elements with highest value per unit weight and using objects with highest benefit to fill knapsack capacity
+#' @title greedy_knapsack_better function
+#' @description evaluates the solution for knapsack problem by choosing elements with highest value per unit weight and using complete knapsack capacity
 #' @returns list containing sum of values of chosen elements and the reference of the elements chosen in the final solution
 #' @param x as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively
 #' @param W as a \code{numeric value} defining the constraint of the knapsack capacity
 #' @export
-greedy_knapsack <- function(x, W) {
+greedy_knapsack_better <- function(x, W) {
 
   #check the validity of the inputs
 
@@ -41,7 +41,6 @@ greedy_knapsack <- function(x, W) {
       final_value = final_value + v[i]                                   #add value of chosen object to final value of knapsack
       cap_left = cap_left - w[i]                                         #reduce capacity left by weight of chosen object
     }
-    if (w[i+1] > cap_left) break                                         #break the loop as soon as we encounter a knapsack object that has higher weight than left over capacity
   }
 
   #store the result

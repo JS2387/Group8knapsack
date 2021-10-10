@@ -122,3 +122,13 @@ invisible(greedy_knapsack(x = test_knapsack[1:1000000,], W = 350000))
 end_time <- Sys.time()
 print(difftime(end_time, start_time, units = "secs"))
 ```
+
+While solving the greedy algorithm, we initially developed a better solution because even after filling the knapsack with objects ranked according to their benefit, we DID NOT break the loop immediately. Instead, we kept the loop going over all the objects to find any other object which may be able to fit into the knapsack. We were able to find such elements and include them into the knapsack. To demonstrate, we have created another function called greedy_knapsack_better()
+
+```{r}
+test_knapsack <- knapsack_objects(2000)
+greedy_knapsack(test_knapsack[1:800,], 3500)
+greedy_knapsack_better(test_knapsack[1:800,], 3500)
+```
+
+As can be seen from the 2 results above, the better solution also takes the object #401 in the final solution!
