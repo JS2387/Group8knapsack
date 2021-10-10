@@ -1,12 +1,13 @@
 Package: Group8knapsack
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Solves the knapsack problem with 3 approaches - Brute Force, DP & Greedy Heuristic
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: c(
+  person("Jaskirat", "Marar", email = "jasma356@student.liu.se", role = c("aut","cre")),
+  person("Filip", "Berndtsson", email = filbe354@student.liu.se, role = "aut"))
+Maintainer: Jaskirat Marar <jasma356@student.liu.se>, Filip Berndtsson <filbe354@student.liu.se>
+Description: Classic knapsack problem is solved with 3 approaches to get to most optimum solution with decreasing complexity    The brute force algorithm check every possible combination before deciding on most optimum solution.    DP reduces the problem complexity to nW by dynamically checking solution values for every knapsack object.    Greedy Heuristic approach ranks objects by per unit value by object and takes objects by parts to fully utilize knapsack capacity
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
@@ -16,3 +17,5 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Config/testthat/edition: 3
+Depends:
+    R (>= 2.10)

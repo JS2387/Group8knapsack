@@ -7,9 +7,9 @@
 greedy_knapsack(x, W)
 }
 \arguments{
-\item{x}{as a {\code}data.frame containing the weights and values of knapsack objects with column names 'w' & 'v' respectively}
+\item{x}{as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively}
 
-\item{W}{as a {\code}numeric value defining the constraint of the knapsack capacity}
+\item{W}{as a \code{numeric value} defining the constraint of the knapsack capacity}
 }
 \value{
 list containing sum of values of chosen elements and the reference of the elements chosen in the final solution

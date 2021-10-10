@@ -1,13 +1,13 @@
 #' @title greedy_knapsack function
 #' @description evaluates the solution for knapsack problem by choosing elements with highest value per unit weight and using complete knapsack capacity
 #' @returns list containing sum of values of chosen elements and the reference of the elements chosen in the final solution
-#' @param x as a {\code}data.frame containing the weights and values of knapsack objects with column names 'w' & 'v' respectively
-#' @param W as a {\code}numeric value defining the constraint of the knapsack capacity
+#' @param x as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively
+#' @param W as a \code{numeric value} defining the constraint of the knapsack capacity
 #' @export
 greedy_knapsack <- function(x, W) {
 
   kp_objects <- x                                                        #assign data to temp variable
-  kp_objects$normvalue <- kp_objects$v/kp_objects$w                      #create profit/item field
+  kp_objects$normvalue <- kp_objects$v/kp_objects$w                      #create profit per item field
   kp_objects$rank[order(-kp_objects$normvalue)] <- 1:nrow(kp_objects)    #create column containing rank of all objects in descending order of profit
   n = length(kp_objects$w)                                               #count of objects
   kp_objects$order <- c(1:n)                                             #preserve original object position before sorting
