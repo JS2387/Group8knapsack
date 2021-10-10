@@ -6,6 +6,13 @@
 #' @export
 greedy_knapsack <- function(x, W) {
 
+  #check the validity of the inputs
+
+  if(!(class(x) == "data.frame")) stop("data set is not a data frame")
+  if(!(ncol(x) == 2) | !(colnames(x)[1] == "w") | !(colnames(x)[2] == "v")) stop("incompatible data frame type")
+  if(any(x < 0)) stop("data frame contains negative values")
+  if(W < 0) stop("invalid knapsack weight")
+
   kp_objects <- x                                                        #assign data to temp variable
   kp_objects$normvalue <- kp_objects$v/kp_objects$w                      #create profit per item field
   kp_objects$rank[order(-kp_objects$normvalue)] <- 1:nrow(kp_objects)    #create column containing rank of all objects in descending order of profit
@@ -17,8 +24,8 @@ greedy_knapsack <- function(x, W) {
   #store all fields separately for ease of referencing
   w <- kp_objects$w
   v <- kp_objects$v
-  normv <- kp_objects$normvalue
-  rank <- kp_objects$rank
+  #normv <- kp_objects$normvalue
+  #rank <- kp_objects$rank
   order <- kp_objects$order
   cap_left = W
 
@@ -30,15 +37,11 @@ greedy_knapsack <- function(x, W) {
   #loop over algorithm
   for (i in 1:n) {
     if (w[i] <= cap_left) {                                              #if item is within capacity left
-      chosen_elements <- c(chosen_elements, order[i])                    #store original object position
-      final_value = final_value + v[i]                                   #all final value with value of chosen object
+      chosen_elements <- c(chosen_elements, order[i])                    #add element to list of chosen elements
+      final_value = final_value + v[i]                                   #add value of chosen object to final value of knapsack
       cap_left = cap_left - w[i]                                         #reduce capacity left by weight of chosen object
     }
-    if (w[i] > cap_left) {                                               #if item weight is greater than the capacity left
-      chosen_elements <- c(chosen_elements, order[i])                    #store element position
-      final_value = final_value + cap_left * normv[i]                    #add fractional value of final object to result
-      break
-    }
+    if (w[i+1] > cap_left) break                                         #break the loop as soon as we encounter a knapsack object that has higher weight than left over capacity
   }
 
   #store the result

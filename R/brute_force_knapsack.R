@@ -1,16 +1,17 @@
-#' @title knapsack_brute_force function
+#' @title brute_force_knapsack function
 #' @description evaluates the solution for knapsack problem by calculating sum of weights & profits for each combination possible for given input
 #' @returns list containing sum of values of chosen elements and the reference of the elements chosen in the final solution
 #' @param x as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively
 #' @param W as a \code{numeric value} defining the constraint of the knapsack capacity
 #' @export
-knapsack_brute_force <- function(x, W) {
+brute_force_knapsack <- function(x, W) {
 
   #check the validity of the inputs
 
   if(!(class(x) == "data.frame")) stop("data set is not a data frame")
   if(!(ncol(x) == 2) | !(colnames(x)[1] == "w") | !(colnames(x)[2] == "v")) stop("incompatible data frame type")
   if(any(x < 0)) stop("data frame contains negative values")
+  if(W < 0) stop("invalid knapsack weight")
 
   #create list for storing output
   result_list <- list(value = 0, elements = c())

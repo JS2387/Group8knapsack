@@ -20,9 +20,9 @@ library(Group8knapsack)
 # KNAPSACK PROBLEM
 
 This package is designed to tackle the classical knapsack problem with 3 different approaches: 
-* Brute Force Method: knapsack_rute_force()
+* Brute Force Method: brute_force_knapsack()
 * Dynamic Programming: knapsack_dynamic()
-* Greedy heuristic
+* Greedy heuristic: greedy_knapsack()
 
 But before we get into the algorithms used, we've written a data generation function that creates a set of objects to be used for the knapsack problem. The sample data can be created by the user providing the total number of objects 'n'
 
@@ -38,21 +38,21 @@ The first approach is the 'naive' approach or as we call it the brute force meth
 
 ```{r}
 test_knapsack <- knapsack_objects(2000)
-knapsack_brute_force(test_knapsack[1:12,], 3500)
+brute_force_knapsack(test_knapsack[1:12,], 3500)
 ```
 
 This method results in the computation of a problem whose complexity is of the order 2^n for n objects. Hence, the computation of the problem takes an incrementally longer amount of time as we keep increasing knapsack objects
 
 ``` {r}
 start_time <- Sys.time()
-invisible(knapsack_brute_force(x = test_knapsack[1:12,], W = 3500))
+invisible(brute_force_knapsack(x = test_knapsack[1:12,], W = 3500))
 end_time <- Sys.time()
 print(difftime(end_time, start_time, units = "secs"))
 ```
 
 ``` {r}
 start_time <- Sys.time()
-invisible(knapsack_brute_force(x = test_knapsack[1:16,], W = 3500))
+invisible(brute_force_knapsack(x = test_knapsack[1:16,], W = 3500))
 end_time <- Sys.time()
 print(difftime(end_time, start_time, units = "secs"))
 ```

@@ -6,6 +6,13 @@
 #' @export
 knapsack_dynamic <- function(x, W) {
 
+  #check the validity of the inputs
+
+  if(!(class(x) == "data.frame")) stop("data set is not a data frame")
+  if(!(ncol(x) == 2) | !(colnames(x)[1] == "w") | !(colnames(x)[2] == "v")) stop("incompatible data frame type")
+  if(any(x < 0)) stop("data frame contains negative values")
+  if(W < 0) stop("invalid knapsack weight")
+
   # initialize list to store list and vector to store chosen objects
   result_list <- list(value = 0, elements = c())
   chosen_elements <- c()
@@ -24,12 +31,24 @@ knapsack_dynamic <- function(x, W) {
       if (i == 1 || j == 1) ks_dp[i,j] = 0          #the first row and column of the matrix should be zero
       else if (weights[i] <= j) {
         ks_dp[i,j] = max(ks_dp[i-1,j], ks_dp[i-1,j-weights[i]]+values[i])                  #if object can fit in knapsack then take object if adding its value improves the value of the knapsack
-        if (!(ks_dp[i,j] == ks_dp[i-1, j])) chosen_elements <- c(chosen_elements, i-1)     #if object was chosen then store its index in the result vector
       } else if (weights[i] > j) ks_dp[i,j] = ks_dp[i-1,j]                                 #if object weight was out of bounds then take the value of the previous row
     }
   }
 
-  chosen_elements <- unique(chosen_elements)        #clean the chosen elements vector
+  #trace elements chosen by DP algorithm
+  i = n
+  j = ks_cap+1
+
+  while (i > 1 && j > 1) {
+    if (!(ks_dp[i,j] == ks_dp[i-1,j])) {
+      chosen_elements <- c(chosen_elements, (i-1))
+      j = j - weights[i]
+      i = i - 1
+    }
+    i = i - 1
+  }
+
+  chosen_elements <- rev(chosen_elements)        #order the chosen elements vector
 
   #assign solution to the resulting list
   result_list$value = ks_dp[n, ks_cap+1]
