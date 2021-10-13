@@ -3,8 +3,9 @@
 #' @returns list containing sum of values of chosen elements and the reference of the elements chosen in the final solution
 #' @param x as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively
 #' @param W as a \code{numeric value} defining the constraint of the knapsack capacity
+#' @import parallel
 #' @export
-brute_force_knapsack <- function(x, W) {
+brute_force_knapsack <- function(x, W, parallel = FALSE) {
 
   #check the validity of the inputs
 
@@ -18,15 +19,43 @@ brute_force_knapsack <- function(x, W) {
 
   n <- length(x$v) #to count number of combinations we will evaluate
   value_sum = 0
+  value = 0
+  elements = c()
 
-  for (i in 1:(2^n - 1)) {
-    comb_bin <- as.integer(intToBits(i))
-    comb_elements <- which(comb_bin > 0)
-    sub_df <- subset(x, as.integer(row.names(x)) %in% comb_elements)
-    if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
-      value_sum = sum(sub_df$v)
-      value = sum(sub_df$v)
-      elements = comb_elements
+  #parallelization
+
+  if (parallel == TRUE) {
+    input_list <- list(x = x, W = W)
+    num_cores <- parallel::detectCores() - 1
+    cl <- parallel::makeCluster(num_cores)
+    output_list <- parallel::parLapply(cl, input_list, function(x) {
+
+      x <- input_list$x
+      W <- input_list$W
+
+      for (i in 1:(2^n - 1)) {
+        comb_bin <- as.integer(intToBits(i))
+        comb_elements <- which(comb_bin > 0)
+        sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
+        if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
+          value_sum = sum(sub_df$v)
+          value = sum(sub_df$v)
+          elements = comb_elements
+          }
+      }
+      })
+    parallel::stopCluster(cl)
+    }
+  else {
+    for (i in 1:(2^n - 1)) {
+      comb_bin <- as.integer(intToBits(i))
+      comb_elements <- which(comb_bin > 0)
+      sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
+      if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
+        value_sum = sum(sub_df$v)
+        value = sum(sub_df$v)
+        elements = comb_elements
+      }
     }
   }
   result_list$value = value

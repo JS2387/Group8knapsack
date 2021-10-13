@@ -4,7 +4,7 @@
 \alias{brute_force_knapsack}
 \title{brute_force_knapsack function}
 \usage{
-brute_force_knapsack(x, W)
+brute_force_knapsack(x, W, parallel = FALSE)
 }
 \arguments{
 \item{x}{as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively}
