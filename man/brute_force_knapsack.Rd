@@ -10,6 +10,8 @@ brute_force_knapsack(x, W, parallel = FALSE)
 \item{x}{as a \code{data.frame} containing the weights and values of knapsack objects with column names 'w' & 'v' respectively}
 
 \item{W}{as a \code{numeric value} defining the constraint of the knapsack capacity}
+
+\item{parallel}{as a \code{logical} to specify if the code should be parallelized or not. Default value is FALSE}
 }
 \value{
 list containing sum of values of chosen elements and the reference of the elements chosen in the final solution

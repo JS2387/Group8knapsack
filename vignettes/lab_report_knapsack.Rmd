@@ -137,67 +137,7 @@ As can be seen from the 2 results above, the better solution also takes the obje
 
 In order to profile our code, we focussed on the brute force method with 20 objects as a sample. We used the following method to profile our original brute_force_knapsack function
 
-```{r}
-library(profvis)
-
-suppressWarnings(RNGversion(min(as.character(getRversion()),"3.5.3")))
-set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
-n <- 2000
-knapsack_objects <- data.frame(
-w=sample(1:4000, size = n, replace = TRUE),
-v=runif(n = n, 0, 10000)
-)
-x <- knapsack_objects[1:20,]
-W = 3500
-    
-profvis({
-    n <- length(x$v) #to count number of combinations we will evaluate
-    value_sum = 0
-    
-    for (i in 1:(2^n - 1)) {
-      comb_bin <- as.integer(intToBits(i))
-      comb_elements <- which(comb_bin > 0)
-      sub_df <- subset(x, as.integer(row.names(x)) %in% comb_elements)
-      if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
-        value_sum = sum(sub_df$v)
-        value = sum(sub_df$v)
-        elements = comb_elements
-      }
-    }
-})
-```
-
 This led us to find that the bottleneck was the subset function that we were using while evaluating that particular combination. We modified the subsetting method as follows which led to a faster code
-
-```{r}
-library(profvis)
-
-suppressWarnings(RNGversion(min(as.character(getRversion()),"3.5.3")))
-set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
-n <- 2000
-knapsack_objects <- data.frame(
-w=sample(1:4000, size = n, replace = TRUE),
-v=runif(n = n, 0, 10000)
-)
-x <- knapsack_objects[1:20,]
-W = 3500
-    
-profvis({
-    n <- length(x$v) #to count number of combinations we will evaluate
-    value_sum = 0
-    
-    for (i in 1:(2^n - 1)) {
-      comb_bin <- as.integer(intToBits(i))
-      comb_elements <- which(comb_bin > 0)
-      sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
-      if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
-        value_sum = sum(sub_df$v)
-        value = sum(sub_df$v)
-        elements = comb_elements
-      }
-    }
-})
-```
 
 This change in the method used to subset led to a faster code with the following improvement:
 
