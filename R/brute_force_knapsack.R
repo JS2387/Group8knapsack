@@ -29,14 +29,9 @@ brute_force_knapsack <- function(x, W, parallel = FALSE) {
     input_list <- list(x = x, W = W)
     num_cores <- parallel::detectCores() - 1
     cl <- parallel::makeCluster(num_cores)
-    output_list <- parallel::parLapply(cl, input_list, function(x) {
-
-      x <- input_list$x
-      W <- input_list$W
-
+    combinations_x <- parallel::parLapply(cl, 1:(2^n-1), function(x) as.integer(intToBits(x)))
       for (i in 1:(2^n - 1)) {
-        comb_bin <- as.integer(intToBits(i))
-        comb_elements <- which(comb_bin > 0)
+        comb_elements <- which(combinations_x[[i]] > 0)
         sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
         if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
           value_sum = sum(sub_df$v)
@@ -44,13 +39,12 @@ brute_force_knapsack <- function(x, W, parallel = FALSE) {
           elements = comb_elements
           }
       }
-      })
     parallel::stopCluster(cl)
     }
   else {
+    combinations_x <- lapply(1:(2^n-1), function(x) as.integer(intToBits(x)))
     for (i in 1:(2^n - 1)) {
-      comb_bin <- as.integer(intToBits(i))
-      comb_elements <- which(comb_bin > 0)
+      comb_elements <- which(combinations_x[[i]] > 0)
       sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
       if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
         value_sum = sum(sub_df$v)

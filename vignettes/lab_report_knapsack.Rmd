@@ -135,7 +135,7 @@ As can be seen from the 2 results above, the better solution also takes the obje
 
 ## PROFILING
 
-In order to profile our code, we focussed on the brute force method with 20 objects as a sample. We used the following method to profile our original brute_force_knapsack function
+In order to profile our code, we focused on the brute force method with 20 objects as a sample. We used the following method to profile our original brute_force_knapsack function
 
 This led us to find that the bottleneck was the subset function that we were using while evaluating that particular combination. We modified the subsetting method as follows which led to a faster code
 
@@ -156,15 +156,15 @@ new_bfk <- function(x, W)  {
   n <- length(x$v) #to count number of combinations we will evaluate
   value_sum = 0
   
-  for (i in 1:(2^n - 1)) {
-    comb_bin <- as.integer(intToBits(i))
-    comb_elements <- which(comb_bin > 0)
-    sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
-    if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
-      value_sum = sum(sub_df$v)
-      value = sum(sub_df$v)
-      elements = comb_elements
-    }
+  combinations_x <- lapply(1:(2^n-1), function(x) as.integer(intToBits(x)))
+    for (i in 1:(2^n - 1)) {
+      comb_elements <- which(combinations_x[[i]] > 0)
+      sub_df <- x[as.integer(row.names(x)) %in% comb_elements, ]
+      if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
+        value_sum = sum(sub_df$v)
+        value = sum(sub_df$v)
+        elements = comb_elements
+      }
   }
 }
   
@@ -172,15 +172,15 @@ old_bfk <- function(x, W){
   n <- length(x$v) #to count number of combinations we will evaluate
   value_sum = 0
   
-  for (i in 1:(2^n - 1)) {
-    comb_bin <- as.integer(intToBits(i))
-    comb_elements <- which(comb_bin > 0)
-    sub_df <- subset(x, as.integer(row.names(x)) %in% comb_elements)
-    if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
-      value_sum = sum(sub_df$v)
-      value = sum(sub_df$v)
-      elements = comb_elements
-    }
+  combinations_x <- lapply(1:(2^n-1), function(x) as.integer(intToBits(x)))
+    for (i in 1:(2^n - 1)) {
+      comb_elements <- which(combinations_x[[i]] > 0)
+      sub_df <- subset(x, as.integer(row.names(x)) %in% comb_elements)
+      if (sum(sub_df$w) < W && sum(sub_df$v) > value_sum) {
+        value_sum = sum(sub_df$v)
+        value = sum(sub_df$v)
+        elements = comb_elements
+      }
   }
 }
 
@@ -195,4 +195,23 @@ time_improvement
 
 ## PARALLELIZING
 
-We attempted to parallelize the brute force algorithm but were not fully successful. We were unable to replicate the same results as we were getting without the parallelization.
+We attempted to parallelize the brute force algorithm and were successfully able to implement parallelization on the formation of all possible combinations of the knapsack elements. The results of implementing the two were as follows:
+
+```{r}
+suppressWarnings(RNGversion(min(as.character(getRversion()),"3.5.3")))
+set.seed(42, kind = "Mersenne-Twister", normal.kind = "Inversion")
+n <- 2000
+knapsack_objects <- data.frame(
+  w=sample(1:4000, size = n, replace = TRUE),
+  v=runif(n = n, 0, 10000)
+)
+x <- knapsack_objects[1:20,]
+W = 3500
+
+par_bfk_time <- system.time(brute_force_knapsack(x, W, parallel = TRUE))
+bfk_time <- system.time(brute_force_knapsack(x, W))
+time_difference <- bfk_time - par_bfk_time
+time_difference
+```
+
+The results were very interesting in the sense that even though the parallel computing was resulting in faster execution of the user instructions, but the system processes were taking longer and thus resulting in no significant improvement to the overall code speed.
